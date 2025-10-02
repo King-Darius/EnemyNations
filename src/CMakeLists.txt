@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 
 project(EnemyNations LANGUAGES CXX)
 
+include(CTest)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -114,4 +116,8 @@ target_link_libraries(EnemyNations
         user32
         gdi32
 )
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
 
