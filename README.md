@@ -34,31 +34,50 @@ There is also the [Enemy Nations Revival Project](http://groups.google.com/forum
 Building on modern Windows
 ==========================
 
-The repository now ships with a CMake build that targets Visual Studio 2022
-and replaces the original proprietary dependencies with source builds and
-open stubs.  To build the game on Windows 10/11:
+The repository now ships with a first-class CMake toolchain that generates a
+Visual Studio 2022 solution on demand.  The project file list is no longer
+hand-maintained: the `src/CMakeLists.txt` script parses `src/enations.dsp`
+directly, ensuring that every source and resource listed in the legacy
+project is built automatically.
 
-1. Install [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with
-   the **Desktop development with C++** workload.  Make sure the optional MFC
-   component is selected.
-2. Install [CMake 3.20+](https://cmake.org/download/).  CMake is also bundled
-   with recent Visual Studio installations.
-3. Open a "x86 Native Tools Command Prompt for VS 2022" (the project still
-   targets Win32) and configure the build:
+Prerequisites
+-------------
+
+* Windows 10 or Windows 11.
+* [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with the
+  **Desktop development with C++** workload and the optional MFC component.
+* [CMake 3.20 or newer](https://cmake.org/download/).  The Visual Studio
+  installer ships with a compatible CMake build.
+
+Configuring and building
+------------------------
+
+1. Launch a "x86 Native Tools Command Prompt for VS 2022" (the game is still
+   a Win32 application).
+2. Generate the Visual Studio solution and project files:
 
    ```cmd
-   cmake -S src -B build -A Win32
+   cmake -S src -B build -G "Visual Studio 17 2022" -A Win32
    ```
 
-4. Build the solution from the command line or from the generated Visual
-   Studio solution:
+3. Build from the command prompt or open the generated `build/EnemyNations.sln`
+   in the Visual Studio IDE:
 
    ```cmd
    cmake --build build --config Release
    ```
 
-The configuration stage builds the `windward` support library directly from
-the sources under `windward/src` and links in stub implementations for the
-Miles Sound System and VDMPlay networking APIs.  The game executable is
-produced in the `build/Release` directory when building the Release
-configuration.
+Open-source replacements for proprietary middleware
+---------------------------------------------------
+
+The original build linked against proprietary libraries such as
+`shmfc4m.lib`, `shlw32m.lib`, `wind40.lib`, `mss32.lib`, and `vdmplay.lib`.
+Those dependencies have been replaced by the in-tree `windward` static
+library, which now compiles from source and provides stubbed
+implementations of the Miles Sound System (`mss_stub.cpp`) and VDMPlay
+(`vdmplay_stub.cpp`).  No external binary blobs are required to link the
+game when using the new build system.
+
+When the build completes, Visual Studio places the game executable in the
+`build/Release` directory (or `build/Debug` when selecting the Debug
+configuration).
