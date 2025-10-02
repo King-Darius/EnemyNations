@@ -9,89 +9,75 @@ set(CMAKE_MFC_FLAG 2)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../windward ${CMAKE_BINARY_DIR}/windward)
 
-set(GAME_SOURCES
-    Ai.cpp
-    area.cpp
-    bmbutton.cpp
-    bridge.cpp
-    caicopy.cpp
-    caidata.cpp
-    caigmgr.cpp
-    caigoal.cpp
-    caihex.cpp
-    caiinit.cpp
-    caimap.cpp
-    caimaput.cpp
-    caimgr.cpp
-    caimsg.cpp
-    caiopfor.cpp
-    cairoute.cpp
-    caisavld.cpp
-    caistart.cpp
-    caitask.cpp
-    caitmgr.cpp
-    caiunit.cpp
-    CdLoc.cpp
-    chat.cpp
-    chatbar.cpp
-    chproute.cpp
-    cpathmap.cpp
-    cpathmgr.cpp
-    creatmul.cpp
-    creatsin.cpp
-    credits.cpp
-    cutscene.cpp
-    dlgflic.cpp
-    DlgMsg.cpp
-    DlgReg.cpp
-    Dxfer.cpp
-    event.cpp
-    icons.cpp
-    ipcchat.cpp
-    ipccomm.cpp
-    ipcmsg.cpp
-    ipcplay.cpp
-    ipcread.cpp
-    ipcsend.cpp
-    join.cpp
-    lastplnt.cpp
-    Lastplnt.rc
-    license.cpp
-    loadtruk.cpp
-    main.cpp
-    Mainloop.cpp
-    minerals.cpp
-    movie.cpp
-    netapi.cpp
-    netcmd.cpp
-    new_game.cpp
-    new_unit.cpp
-    newworld.cpp
-    options.cpp
-    pickrace.cpp
-    player.cpp
-    PlyrList.cpp
-    projbase.cpp
-    racedata.cpp
-    relation.cpp
-    research.cpp
-    scenario.cpp
-    sprite.cpp
-    sprtinit.cpp
-    stdafx.cpp
-    terrain.cpp
-    toolbar.cpp
-    tstsnds.cpp
-    unit.cpp
-    unit_wnd.cpp
-    vehicle.cpp
-    Vehmove.cpp
-    vehoppo.cpp
-    VPXFER.CPP
-    world.cpp
-    wrldinit.cpp
-    RES/VERSION.RC
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/enations.dsp ENATIONS_DSP_CONTENT)
+string(REGEX MATCHALL "SOURCE=\\.\\\\([^\\r\\n]+)" ENATIONS_DSP_MATCHES "${ENATIONS_DSP_CONTENT}")
+
+file(
+    GLOB_RECURSE
+    ENATIONS_SOURCE_CANDIDATES
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    CONFIGURE_DEPENDS
+    *.c
+    *.C
+    *.cxx
+    *.cpp
+    *.CPP
+    *.rc
+    *.RC
 )
+
+set(_VALID_EXTENSIONS .c .cpp .cxx .rc)
+set(GAME_SOURCES)
+foreach(_entry IN LISTS ENATIONS_DSP_MATCHES)
+    string(REGEX REPLACE "SOURCE=\\.\\\\([^\\r\\n]+)" "\\1" _relative "${_entry}")
+    string(REPLACE "\\\" "\"" _relative "${_relative}")
+    string(REPLACE "\\\\" "/" _relative "${_relative}")
+    string(TOLOWER "${_relative}" _relative_lower)
+    get_filename_component(_ext "${_relative_lower}" EXT)
+
+    set(_ext_valid OFF)
+    foreach(_valid_ext IN LISTS _VALID_EXTENSIONS)
+        if(_ext STREQUAL _valid_ext)
+            set(_ext_valid ON)
+            break()
+        endif()
+    endforeach()
+
+    if(NOT _ext_valid)
+        continue()
+    endif()
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_relative}")
+        set(_resolved "${_relative}")
+    else()
+        set(_resolved "")
+        foreach(_candidate IN LISTS ENATIONS_SOURCE_CANDIDATES)
+            string(TOLOWER "${_candidate}" _candidate_lower)
+            if(_candidate_lower STREQUAL _relative_lower)
+                set(_resolved "${_candidate}")
+                break()
+            endif()
+        endforeach()
+        if(_resolved STREQUAL "")
+            message(FATAL_ERROR "Unable to resolve source '${_relative}' listed in enations.dsp")
+        endif()
+    endif()
+
+    list(APPEND GAME_SOURCES "${_resolved}")
+endforeach()
+
+list(REMOVE_DUPLICATES GAME_SOURCES)
+
+if(GAME_SOURCES STREQUAL "")
+    message(FATAL_ERROR "No source files were discovered in enations.dsp")
+endif()
+
+set(GAME_SOURCES_ABSOLUTE)
+foreach(_src IN LISTS GAME_SOURCES)
+    list(APPEND GAME_SOURCES_ABSOLUTE "${CMAKE_CURRENT_SOURCE_DIR}/${_src}")
+endforeach()
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${GAME_SOURCES_ABSOLUTE})
 
 add_executable(EnemyNations WIN32 ${GAME_SOURCES})
 
