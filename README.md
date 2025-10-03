@@ -2,7 +2,7 @@ README
 ======
 
 This is the source code of the game [Enemy Nations](http://enemynations.com)
-without the [content](http://timeoutd.net/EnemyNationsSource.rar).
+with some of the [content](http://timeoutd.net/EnemyNationsSource.rar) now added. Keep in mind, everything here remains the copyright of Windward.  I have packaged the additional media for testing the updated code.  The company can hopefully benefit from anything we do here if or when the decide to make an Enemy Nations Two.
 
 For a historical overview of the game's development, legal battles, and
 open-source revival, see [HISTORY.md](HISTORY.md).
