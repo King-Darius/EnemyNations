@@ -13,16 +13,21 @@ Message me if you need help.
 
 See license.txt for the license.
 
-Goals
-=====
+Goals and roadmap
+=================
 
 Well, ultimately to port it to linux and update the graphics and udpade the
-weird userinterface to something more usable. 
+weird userinterface to something more usable.
+
+A living roadmap that expands on these themes now lives in
+[ROADMAP.md](ROADMAP.md).  It tracks the remaining gaps for Linux support,
+modern rendering, UI upgrades, and supporting infrastructure.
+
 But step by step:
 
-1. Update to compile with Visual C++ 2010 and remove CD check 
+1. Update to compile with Visual C++ 2010 and remove CD check
 2. Port to Linux
-3. Enhance rendering engine and graphics 
+3. Enhance rendering engine and graphics
 4. Enhance userinterface
 
 --Marenz
