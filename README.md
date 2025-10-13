@@ -1,6 +1,8 @@
 README
 ======
 
+I am currently directing interested parties to this project instead => https://github.com/EnemyV/EnemyNationsRevival.git
+
 This is the source code of the game [Enemy Nations](http://enemynations.com)
 with some of the [content](http://timeoutd.net/EnemyNationsSource.rar) now added. Keep in mind, everything here remains the copyright of Windward.  I have packaged the additional media for testing the updated code.  The company can hopefully benefit from anything we do here if or when they decide to make an Enemy Nations Two.
 
